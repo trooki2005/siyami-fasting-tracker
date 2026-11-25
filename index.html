@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f5132">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="صيامي">
+<link rel="icon" href="icon.svg">
+<title>صيامي</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;-webkit-text-size-adjust:100%;position:relative;font-family:system-ui,"Noto Naskh Arabic",Tahoma,sans-serif;background:#f1f6f3;color:#12261c;min-height:100vh;padding:max(env(safe-area-inset-top),12px) 16px max(env(safe-area-inset-bottom),24px)}
+h1{text-align:center;color:#0f5132;margin:22px 0 4px;font-size:28px}
+.sub{text-align:center;color:#5b7567;margin:0 0 18px;font-size:14px}
+.card{background:#fff;border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:0 2px 10px #0f513218;text-align:center}
+.lbl{color:#5b7567;font-size:14px}
+.big{font-size:30px;font-weight:700;color:#0f5132;margin:6px 0}
+.num{font-size:54px;font-weight:800;color:#0f5132;line-height:1.1}
+button{font:inherit;border:0;border-radius:16px;width:100%;padding:18px;font-size:22px;font-weight:700;background:#0f5132;color:#fff}
+button:active{transform:scale(.98)}
+button.done{background:#d7e8de;color:#0f5132}
+.row{display:flex;gap:12px}.row .card{flex:1;margin-bottom:14px}
+.days{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px}
+.d{width:34px;height:34px;border-radius:10px;background:#eef3f0;font-size:14px;display:flex;align-items:center;justify-content:center;color:#7a8f83}
+.d.t{background:#1d6fb8;color:#fff;border-color:#1d6fb8;font-weight:700}.d.t.on{background:#0f5132;box-shadow:0 0 0 3px #1d6fb8}.d.fut{opacity:.8}
+.nav{width:44px;padding:6px;font-size:24px;border-radius:12px;background:#d7e8de;color:#0f5132}
+.leg{display:flex;flex-wrap:wrap;gap:8px 12px;justify-content:center;margin-top:12px;font-size:12px;color:#5b7567}.leg i{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:middle;margin-left:4px}
+.d.c-mon,.d.c-thu{background:#e6dcf5;border:2px solid #8e6fc4;color:#4b2f85}
+.d.c-white{background:#d3f0ef;border:2px solid #2aa5a0;color:#0b5e5a}
+.d.c-sun{background:#fde3c2;border:2px solid #e8890c;color:#7a4300}
+.d.c-ashura{background:#f4e3a1;border:2px solid #d9b84a;color:#5a4500}
+.d.c-arafah{background:#f8c9d8;border:2px solid #d6336c;color:#7a0f36}
+.d.on{background:#0f5132;color:#fff;border-color:#0f5132}
+.small{font-size:13px;color:#7a8f83;text-align:center;margin-top:14px}
+.d.t,.d.t.c-mon,.d.t.c-thu,.d.t.c-white,.d.t.c-ashura,.d.t.c-arafah,.d.t.c-sun{background:#1d6fb8;color:#fff;border:2px solid #1d6fb8;font-weight:700}.d.t.on{background:#0f5132;box-shadow:0 0 0 3px #1d6fb8}
+.seg{display:flex;gap:8px}.seg button{padding:12px;font-size:18px;background:#e3ece6;color:#12261c}.seg button.on{background:#0f5132;color:#fff}
+.sw{direction:ltr;width:56px;height:32px;border-radius:16px;background:#c9ced1;position:relative;cursor:pointer;transition:background .2s}
+.sw i{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0004;transition:left .2s}
+.sw.on{background:#4a4f52}.sw.on i{left:27px}
+</style></head><body>
+<button id="gear" aria-label="الإعدادات" style="position:absolute;top:max(env(safe-area-inset-top),12px);left:16px;width:44px;height:44px;padding:0;font-size:24px;border-radius:50%;background:#d7e8de;color:#0f5132">⚙</button>
+<h1>صيامي</h1><p class="sub" id="today" style="margin:0 52px 18px;color:#0f5132;font-size:13px;line-height:1.5"></p>
+<div class="card"><div class="lbl" id="nl">الصيام القادم</div><div class="big" id="nd">-</div><div class="lbl" id="nr"></div></div>
+<button id="btn">صمت اليوم</button>
+<div style="height:14px"></div>
+<div class="row">
+<div class="card"><div class="lbl" id="ml">صيامك هذا الشهر</div><div class="num" id="cm">0</div></div>
+<div class="card"><div class="lbl" id="yl">صيامك هذه السنة</div><div class="num" id="ct">0</div></div>
+</div>
+<div class="card"><div class="lbl">المناسبات القادمة</div><div id="sp" style="margin-top:8px;line-height:1.9"></div></div>
+<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><button id="pv" class="nav">›</button><div class="lbl" id="mn" style="font-size:16px;font-weight:700"></div><button id="nx" class="nav">‹</button></div><div class="days" id="days"></div>
+<div class="leg"><span><i style="background:#1d6fb8"></i>اليوم</span><span><i style="background:#0f5132"></i>صمتّه (مسجَّل)</span><span><i style="background:#e6dcf5;border:2px solid #8e6fc4"></i>الاثنين والخميس</span><span><i style="background:#d3f0ef;border:2px solid #2aa5a0"></i>الأيام البيض (١٣-١٤-١٥ هجري)</span><span><i style="background:#f4e3a1;border:2px solid #d9b84a"></i>عاشوراء (١٠ محرم)</span><span><i style="background:#f8c9d8;border:2px solid #d6336c"></i>عرفة (٩ ذو الحجة)</span><span><i style="background:#fde3c2;border:2px solid #e8890c"></i>أيام مستحبة أخرى</span></div>
+<div class="small" style="margin-top:8px">اضغط على أي يوم سابق لتسجيل صيامه أو إلغائه</div></div>
+<p class="small" style="color:#0f5132;font-weight:700;margin-top:6px">المبرمج: تركي الربيعة أبو فيصل</p>
+<div id="st" style="display:none;position:fixed;inset:0;background:#0008;z-index:9;align-items:flex-end;justify-content:center">
+<div style="background:#f1f6f3;width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));max-height:90vh;overflow:auto">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><b style="font-size:20px;color:#0f5132">الإعدادات</b><button id="stx" style="width:44px;padding:6px;font-size:22px;border-radius:50%;background:#d7e8de;color:#0f5132">✕</button></div>
+<div class="card" style="text-align:right"><div class="lbl" style="margin-bottom:8px">نوع التنبيه</div>
+<div class="seg" id="sg-snd"><button data-v="0">صامت</button><button data-v="1">بصوت</button></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px"><span style="font-size:18px">الاهتزاز</span><div id="sw" class="sw" role="switch" aria-checked="false"><i></i></div></div></div>
+<div class="card" style="text-align:right"><div class="lbl" style="margin-bottom:8px">عرض التاريخ</div>
+<div class="seg" id="sg-cal"><button data-v="h">هجري</button><button data-v="g">ميلادي</button></div></div>
+<div class="small" style="margin:0">التنبيهات تعمل داخل تطبيق الأندرويد فقط. غيّر الاختيار وسيطبَّق على التنبيه القادم.</div>
+</div></div>
+<script>
+const K='fasts_v1';
+let S=new Set(JSON.parse(localStorage.getItem(K)||'[]'));
+const pad=n=>String(n).padStart(2,'0');
+const key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const HF=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric'});
+const HF2=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric'});
+function hij(d){const p=HF2.formatToParts(d);const g=t=>+p.find(x=>x.type===t).value;return{d:g('day'),m:g('month'),y:g('year')}}
+const HM=['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+let A=new Date();A=new Date(A.getFullYear(),A.getMonth(),A.getDate());let FIRST,LAST;
+let CAL=localStorage.getItem('cal_v1')||'h';
+// نوع الصيام: arafah / ashura / mon / thu
+function fastType(d){const h=hij(new Date(d.getFullYear(),d.getMonth(),d.getDate(),12));
+ // أيام يُمنع صيامها أو لا تُعلَّم: رمضان (فرض)، عيد الفطر ١ شوال، عيد الأضحى والتشريق ١٠-١٣ ذو الحجة
+ if(h.m===9||(h.m===10&&h.d===1)||(h.m===12&&h.d>=10&&h.d<=13))return null;
+ if(h.m===12&&h.d===9)return'arafah';if(h.m===1&&h.d===10)return'ashura';
+ if(h.d>=13&&h.d<=15)return'white';
+ if(d.getDay()===1)return'mon';if(d.getDay()===4)return'thu';
+ if(h.m===1)return'sun-muh';
+ if(h.m===8&&h.d<=28)return'sun-sha';
+ if(h.m===10&&h.d>=2&&h.d<=7)return'sun-shw';
+ if(h.m===12&&h.d<=8)return'sun-dhh';
+ return null}
+const isF=d=>{const f=fastType(d);return !!f&&!f.startsWith('sun')};
+const NAME={'sun-muh':'صيام محرم (مستحب)','sun-sha':'صيام شعبان (مستحب)','sun-shw':'ست من شوال (مستحب)','sun-dhh':'أوائل ذي الحجة (مستحب)',white:'صيام الأيام البيض',arafah:'يوم عرفة',ashura:'يوم عاشوراء',mon:'صيام الاثنين',thu:'صيام الخميس'};
+const DN=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const MN=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+function save(){localStorage.setItem(K,JSON.stringify([...S]))}
+const day0=n=>new Date(n.getFullYear(),n.getMonth(),n.getDate());
+function nextOf(from,pred){let d=new Date(from);for(let i=0;i<800;i++){if(pred(d))return d;d.setDate(d.getDate()+1)}return null}
+function fmt(d){if(CAL==='h'){const h=hij(d);return DN[d.getDay()]+' '+ar(h.d)+' '+HM[h.m-1]}return DN[d.getDay()]+' '+ar(d.getDate())+' '+MN[d.getMonth()]}
+function fmtY(d){return CAL==='h'?fmt(d)+' '+ar(hij(d).y):fmt(d)+' '+ar(d.getFullYear())}
+function render(){
+ const now=new Date(),t0=day0(now),tk=key(t0);
+ const btn=document.getElementById('btn');
+ if(S.has(tk)){btn.textContent='✓ تم تسجيل صيام اليوم (اضغط للتراجع)';btn.className='done'}
+ else{btn.textContent='صمت اليوم';btn.className=''}
+ let d=new Date(t0);if(S.has(tk)||dayOver(now)||!isF(d))d.setDate(d.getDate()+1);
+ d=nextOf(d,isF);
+ const diff=Math.round((d-t0)/864e5);
+ document.getElementById('nd').textContent=(diff===0?'اليوم ':'')+fmt(d);
+ document.getElementById('nr').textContent=NAME[fastType(d)]+' · '+(diff===0?'اليوم':diff===1?'بكرة':'بعد '+ar(diff)+' أيام');
+ const tm=new Date(t0);tm.setDate(tm.getDate()+1);
+ const ts=nextOf(tm,d=>{const f=fastType(d);return f==='ashura'||f==='arafah'});
+ const ra=nextOf(tm,d=>fastType(d)==='ashura'),rf=nextOf(tm,d=>fastType(d)==='arafah');
+ document.getElementById('sp').innerHTML=[['arafah',rf],['ashura',ra]].sort((a,b)=>a[1]-b[1]).map(([k,x])=>NAME[k]+': <b>'+fmtY(x)+'</b>').join('<br>');
+ let first,last,title;
+ if(A===undefined)A=t0;
+ if(CAL==='h'){const h=hij(A);first=new Date(A);first.setDate(first.getDate()-(h.d-1));last=new Date(first);
+  while(hij(new Date(last.getFullYear(),last.getMonth(),last.getDate()+1)).m===h.m)last.setDate(last.getDate()+1);
+  title=HM[h.m-1]+' '+ar(h.y)+' هـ'}
+ else{first=new Date(A.getFullYear(),A.getMonth(),1);last=new Date(A.getFullYear(),A.getMonth()+1,0);title=MN[A.getMonth()]+' '+ar(A.getFullYear())}
+ const days=[];for(let x=new Date(first);x<=last;x.setDate(x.getDate()+1))days.push(new Date(x));
+ document.getElementById('cm').textContent=ar(days.filter(x=>S.has(key(x))).length);
+ const hy=hij(t0).y;document.getElementById('ct').textContent=ar([...S].filter(k=>{const p=k.split('-');return hij(new Date(+p[0],+p[1]-1,+p[2],12)).y===hy}).length);document.getElementById('yl').textContent='صيامك هذه السنة '+ar(hy)+' هـ';
+ document.getElementById('mn').textContent=title;document.getElementById('ml').textContent='صيامك هذا الشهر '+(CAL==='h'?HM[hij(A).m-1]:MN[A.getMonth()]);
+ const box=document.getElementById('days');box.innerHTML='';
+ days.forEach(x=>{const e=document.createElement('div'),f=fastType(x);
+  e.className='d'+(f?' c-'+(f.startsWith('sun')?'sun':f):'')+(S.has(key(x))?' on':'')+(key(x)===tk?' t':'')+(x>t0?' fut':'');e.textContent=ar(CAL==='h'?hij(x).d:x.getDate());
+  if(x<=t0)e.onclick=()=>{const k=key(x);S.has(k)?S.delete(k):S.add(k);save();render()};box.appendChild(e)});
+ FIRST=first;LAST=last;
+ const td=hij(t0);document.getElementById('today').textContent='اليوم: '+DN[t0.getDay()]+' '+ar(td.d)+' '+HM[td.m-1]+' '+ar(td.y)+' هـ · '+ar(t0.getDate())+' '+MN[t0.getMonth()]+' '+ar(t0.getFullYear());
+ 
+}
+document.getElementById('pv').onclick=()=>{A=new Date(FIRST);A.setDate(A.getDate()-1);render()};
+document.getElementById('nx').onclick=()=>{A=new Date(LAST);A.setDate(A.getDate()+1);render()};
+
+document.getElementById('btn').onclick=()=>{const t=key(new Date());S.has(t)?S.delete(t):S.add(t);save();render()};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){A=day0(new Date());render()}});
+
+// ---- الإعدادات ----
+let SET=Object.assign({snd:0,vib:0},JSON.parse(localStorage.getItem('set_v1')||'{}'));
+function saveSet(){localStorage.setItem('set_v1',JSON.stringify(SET));if(window.Android&&Android.setPrefs)Android.setPrefs(SET.snd,SET.vib)}
+function drawSet(){
+ document.querySelectorAll('#sg-snd button').forEach(b=>b.classList.toggle('on',+b.dataset.v===SET.snd));
+ document.querySelectorAll('#sg-cal button').forEach(b=>b.classList.toggle('on',b.dataset.v===CAL));
+ const w=document.getElementById('sw');w.classList.toggle('on',!!SET.vib);w.setAttribute('aria-checked',SET.vib?'true':'false')}
+document.getElementById('gear').onclick=()=>{drawSet();document.getElementById('st').style.display='flex'};
+document.getElementById('stx').onclick=()=>{document.getElementById('st').style.display='none'};
+document.getElementById('st').onclick=e=>{if(e.target.id==='st')e.target.style.display='none'};
+document.querySelectorAll('#sg-snd button').forEach(b=>b.onclick=()=>{SET.snd=+b.dataset.v;saveSet();drawSet()});
+document.querySelectorAll('#sg-cal button').forEach(b=>b.onclick=()=>{CAL=b.dataset.v;localStorage.setItem('cal_v1',CAL);drawSet();render()});
+document.getElementById('sw').onclick=()=>{SET.vib=SET.vib?0:1;saveSet();drawSet()};
+saveSet();
+// غروب الشمس التقريبي في الدمام (خط 26.43 شمالاً، 50.10 شرقاً)
+function sunsetMin(d){const r=Math.PI/180,lat=26.43*r,lon=50.10;
+ const N=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(d.getFullYear(),0,0))/864e5);
+ const g=2*Math.PI/365*(N-1);
+ const eq=229.18*(0.000075+0.001868*Math.cos(g)-0.032077*Math.sin(g)-0.014615*Math.cos(2*g)-0.040849*Math.sin(2*g));
+ const de=0.006918-0.399912*Math.cos(g)+0.070257*Math.sin(g)-0.006758*Math.cos(2*g)+0.000907*Math.sin(2*g)-0.002697*Math.cos(3*g)+0.00148*Math.sin(3*g);
+ const ha=Math.acos(Math.cos(90.833*r)/(Math.cos(lat)*Math.cos(de))-Math.tan(lat)*Math.tan(de))/r;
+ return 720-4*(lon-ha)-eq+180}
+function dayOver(now){return now.getHours()*60+now.getMinutes()>=sunsetMin(now)}
+setInterval(()=>render(),60000);
+render();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js');
+</script></body></html>
